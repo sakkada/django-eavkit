@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-19 14:41+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: admin.py:21
+msgid "Attributes"
+msgstr "Атрибуты"
+
+#: attributes.py:89
+#, python-format
+msgid "Choice value \"%s\" incorrect."
+msgstr "Значение \"%s\" из списка некорректно."
+
+#: attributes.py:94
+#, python-format
+msgid "Choice value \"%s\" incorrect: %s."
+msgstr "Значение \"%s\" из списка некорректно: %s."
+
+#: attributes.py:97
+msgid "Choice values are not unique."
+msgstr "Список содержит одинаковые значения."
+
+#: attributes.py:119
+msgid "Choices must be defined if multiple."
+msgstr ""
+"Список значений должен быть заполнен, если поле должно поддерживать "
+"множественный выбор."
+
+#: attributes.py:159
+msgid "String"
+msgstr "Строка"
+
+#: attributes.py:164
+msgid "Must be str or unicode"
+msgstr "Значение должно быть строкой (str или unicode)"
+
+#: attributes.py:175
+msgid "Integer"
+msgstr "Целое число"
+
+#: attributes.py:182
+msgid "Must be an integer"
+msgstr "Значение должно быть целым числом"
+
+#: attributes.py:193
+msgid "Float"
+msgstr "Десятичное (вещественное) число"
+
+#: attributes.py:200
+msgid "Must be a float"
+msgstr "Значение должно быть десятичным (вещественным) числом"
+
+#: attributes.py:217
+msgid "Text"
+msgstr "Текст"
+
+#: attributes.py:235
+msgid "Boolean"
+msgstr "Логическое значение (True или False)"
+
+#: attributes.py:240
+msgid "Must be a boolean"
+msgstr "Значение должно быть логическим (True или False)"
+
+#: attributes.py:251
+msgid "Date"
+msgstr "Дата (date)"
+
+#: attributes.py:256
+msgid "Must be a date"
+msgstr "Значение должно быть объектом date (датой)"
+
+#: attributes.py:268
+msgid "Date and Time"
+msgstr "Дата с временем (datetime)"
+
+#: attributes.py:273
+msgid "Must be a datetime"
+msgstr "Значение должно быть объектом datetime (датой с временем)"
+
+#: config.py:8
+msgid "EAV Kit"
+msgstr "Атрибуты (EAV – Сущность-Атрибут-Значение)"
+
+#: forms.py:28
+#, python-format
+msgid "The %s could not be saved because the data didn't validate."
+msgstr "Значение %s не может быть сохранено — данные не прошли проверку."
+
+#: models.py:18
+msgid ""
+"Must be all lower case, start with a letter, and contain only letters, "
+"numbers, or underscores."
+msgstr ""
+"Значение должно быть в нижнем регистре, начинаться с бувкы и содержать "
+"только бувкы, цифры и символы подчеркивания."
+
+#: models.py:28
+msgid "site"
+msgstr "сайт"
+
+#: models.py:31
+msgid "name"
+msgstr "название"
+
+#: models.py:32
+msgid "User-friendly attribute name"
+msgstr "Название атрибута (title)"
+
+#: models.py:34
+msgid "slug"
+msgstr "код атрибута"
+
+#: models.py:35
+msgid "Short unique attribute code"
+msgstr "Уникальный код атрибута"
+
+#: models.py:37
+msgid "description"
+msgstr "Описание"
+
+#: models.py:38
+msgid "Short description"
+msgstr "Короткое описание"
+
+#: models.py:40
+msgid "multiple"
+msgstr "Поддержка множественного выбора"
+
+#: models.py:41
+msgid "required"
+msgstr "Обязательно для заполнения"
+
+#: models.py:43
+msgid "data type"
+msgstr "тип данных"
+
+#: models.py:45
+msgid "code"
+msgstr "код для фильтрации"
+
+#: models.py:46
+msgid "choices"
+msgstr "список возможных значений"
+
+#: models.py:48
+msgid "weight"
+msgstr "вес"
+
+#: models.py:50
+msgid "created"
+msgstr "дата создания"
+
+#: models.py:51
+msgid "modified"
+msgstr "дата модификации"
+
+#: models.py:54
+msgid "Attribute options"
+msgstr "Настройки атрибутов"
+
+#: models.py:55
+msgid "Attributes options"
+msgstr "Настройки атрибута"
+
+#: models.py:102
+#, python-format
+msgid "%(obj)s has no EAV attribute named '%(attr)s'"
+msgstr "Объект %(obj)s не имеет EAV атрибута с именем «%(attr)s»"
+
+#: models.py:147
+#, python-format
+msgid "%(attr)s EAV field cannot be blank"
+msgstr "EAV поле %(attr)s не может быть пустым"
+
+#: models.py:154
+#, python-format
+msgid "%(attr)s EAV field %(err)s"
+msgstr "Ошибка EAV поля %(attr)s — %(err)s"

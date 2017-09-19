@@ -1,0 +1,4 @@
+include README.md
+recursive-include eavkit/locale *.mo *.po
+recursive-include eavkit/static *.js
+global-exclude *.py[co]
