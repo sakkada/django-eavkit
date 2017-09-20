@@ -3,6 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.dateparse import parse_date, parse_datetime
+from eavkit import fields
 
 
 # Base Attribute class
@@ -78,7 +79,7 @@ class BaseAttribute(object):
 # ----------------
 class ChoicesMixin(BaseAttribute):
     form_field_choices = forms.TypedChoiceField
-    form_field_choices_coerce = None
+    form_field_coerce = None
 
     def clean_attribute_model_instance(self, instance):
         super(ChoicesMixin, self).clean_attribute_model_instance(instance)
@@ -104,22 +105,18 @@ class ChoicesMixin(BaseAttribute):
                                     for cvalue, ctitle in self.choices]
         kwargs = self.get_form_field_defaults()
         kwargs.update(initial=value, choices=choices,
-                      coerce=self.form_field_choices_coerce,
+                      coerce=self.form_field_coerce,
                       empty_value=None)
         return self.form_field_choices(**kwargs)
 
 
-class MultipleChoicesMixin(ChoicesMixin):
-    form_field_choices_multiple = forms.TypedMultipleChoiceField
-
-    def clean_attribute_model_instance(self, instance):
-        super(MultipleChoicesMixin,
-              self).clean_attribute_model_instance(instance)
-        if self.multiple and not self.choices:
-            raise ValidationError(_('Choices must be defined if multiple.'))
+class MultipleMixin(BaseAttribute):
+    form_field_multiple = fields.TextMultipleValuesField
+    form_field_multiple_delimiter = None
+    form_field_coerce = None
 
     def validate(self, value, entity=None):
-        spr = super(MultipleChoicesMixin, self)
+        spr = super(MultipleMixin, self)
         if not self.multiple:
             spr.validate(value, entity)
             return
@@ -130,7 +127,7 @@ class MultipleChoicesMixin(ChoicesMixin):
             spr.validate(i, entity)
 
     def value_decode(self, value, multiple=True):
-        spr = super(MultipleChoicesMixin, self)
+        spr = super(MultipleMixin, self)
         if not self.multiple or not multiple:
             return spr.value_decode(value)
 
@@ -141,6 +138,19 @@ class MultipleChoicesMixin(ChoicesMixin):
         return value
 
     def get_form_field(self, value=None):
+        if not self.multiple:
+            return super(MultipleMixin, self).get_form_field(value)
+
+        kwargs = self.get_form_field_defaults()
+        kwargs.update(initial=value, coerce=self.form_field_coerce,
+                      delimiter=self.form_field_multiple_delimiter)
+        return self.form_field_multiple(**kwargs)
+
+
+class MultipleChoicesMixin(MultipleMixin, ChoicesMixin):
+    form_field_choices_multiple = forms.TypedMultipleChoiceField
+
+    def get_form_field(self, value=None):
         if not self.multiple or not self.choices:
             return super(MultipleChoicesMixin, self).get_form_field(value)
 
@@ -148,7 +158,7 @@ class MultipleChoicesMixin(ChoicesMixin):
                    for cvalue, ctitle in self.choices]
         kwargs = self.get_form_field_defaults()
         kwargs.update(initial=value, choices=choices,
-                      coerce=self.form_field_choices_coerce)
+                      coerce=self.form_field_coerce)
         return self.form_field_choices_multiple(**kwargs)
 
 
@@ -209,7 +219,8 @@ class BaseFloatAttribute(BaseAttribute):
 # Attribute classes
 # -----------------
 class StringAttribute(MultipleChoicesMixin, BaseStringAttribute):
-    form_field_choices_coerce = unicode
+    form_field_coerce = unicode
+    form_field_multiple_delimiter = '\n'
 
 
 class TextAttribute(BaseStringAttribute):
@@ -223,11 +234,13 @@ class TextAttribute(BaseStringAttribute):
 
 
 class IntegerAttribute(MultipleChoicesMixin, BaseIntegerAttribute):
-    form_field_choices_coerce = int
+    form_field_coerce = int
+    form_field_multiple_delimiter = '\n'
 
 
 class FloatAttribute(MultipleChoicesMixin, BaseFloatAttribute):
-    form_field_choices_coerce = float
+    form_field_coerce = float
+    form_field_multiple_delimiter = '\n'
 
 
 class BooleanAttribute(BaseAttribute):

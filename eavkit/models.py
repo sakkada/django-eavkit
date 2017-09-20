@@ -54,7 +54,7 @@ class BaseAttributeOptions(models.Model):
         verbose_name = _(u'Attribute options')
         verbose_name_plural = _(u'Attributes options')
         unique_together = ('site', 'slug')
-        ordering = ('-weight', 'site', 'name', '-id',)
+        ordering = ('-weight', 'site', '-id',)
         abstract = True
 
     def __unicode__(self):
