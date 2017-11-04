@@ -86,4 +86,4 @@ class AttributeOptionsAdmin(admin.ModelAdmin):
     def has_choices(self, obj):
         return _boolean_icon(bool(obj.choices.strip()))
     has_choices.allow_tags = True
-    has_choices.short_description = 'Choices'
+    has_choices.short_description = _('Choices')

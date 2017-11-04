@@ -181,7 +181,7 @@ class BaseStringAttribute(BaseAttribute):
 
 
 class BaseIntegerAttribute(BaseAttribute):
-    datatype = 'int'
+    datatype = 'integer'
     datatype_title = _('Integer')
     form_field = forms.IntegerField
 

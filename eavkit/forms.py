@@ -25,8 +25,8 @@ class BaseEntityForm(ModelForm):
 
     def save(self, commit=True):
         if self.errors:
-            raise ValueError(_(u"The %s could not be saved because the data"
-                               u" didn't validate.") %
+            raise ValueError(_(u'The %s could not be saved because the data'
+                               u' didn\'t validate.') %
                              self.instance._meta.object_name)
 
         # create entity instance, don't save yet

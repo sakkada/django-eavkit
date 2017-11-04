@@ -25,30 +25,30 @@ class BaseAttributeOptions(models.Model):
     DATATYPE_CHOICES = (('', '---',),)
 
     site = models.ForeignKey(
-        Site, verbose_name=_(u"site"), default=settings.SITE_ID)
+        Site, verbose_name=_(u'site'), default=settings.SITE_ID)
 
     name = models.CharField(
-        _(u"name"), max_length=100,
-        help_text=_(u"User-friendly attribute name"))
+        _(u'name'), max_length=100,
+        help_text=_(u'User-friendly attribute name'))
     slug = models.SlugField(
-        _(u"slug"), max_length=50, db_index=True, validators=[validate_slug],
-        help_text=_(u"Short unique attribute code"))
+        _(u'slug'), max_length=50, db_index=True, validators=[validate_slug],
+        help_text=_(u'Short unique attribute code'))
     description = models.CharField(
-        _(u"description"), max_length=256, blank=True, null=True,
-        help_text=_(u"Short description"))
+        _(u'description'), max_length=256, blank=True, null=True,
+        help_text=_(u'Short description'))
 
-    multiple = models.BooleanField(_(u"multiple"), default=False)
-    required = models.BooleanField(_(u"required"), default=False)
+    multiple = models.BooleanField(_(u'multiple'), default=False)
+    required = models.BooleanField(_(u'required'), default=False)
     datatype = models.CharField(
-        _(u"data type"), max_length=32, choices=DATATYPE_CHOICES)
+        _(u'data type'), max_length=32, choices=DATATYPE_CHOICES)
 
-    code = models.CharField(_(u"code"), max_length=20, blank=True, null=True)
-    choices = models.TextField(_(u"choices"), blank=True)
+    code = models.CharField(_(u'code'), max_length=20, blank=True, null=True)
+    choices = models.TextField(_(u'choices'), blank=True)
 
-    weight = models.IntegerField(_(u"weight"), default=500)
+    weight = models.IntegerField(_(u'weight'), default=500)
 
-    created = models.DateTimeField(_(u"created"), auto_now_add=True,)
-    modified = models.DateTimeField(_(u"modified"), auto_now=True)
+    created = models.DateTimeField(_(u'created'), auto_now_add=True,)
+    modified = models.DateTimeField(_(u'modified'), auto_now=True)
 
     class Meta:
         verbose_name = _(u'Attribute options')
@@ -58,7 +58,7 @@ class BaseAttributeOptions(models.Model):
         abstract = True
 
     def __unicode__(self):
-        return u"%s (%s)" % (self.name, self.get_datatype_display())
+        return u'%s (%s)' % (self.name, self.get_datatype_display())
 
     def get_attribute(self):
         if not hasattr(self, '_attribute'):
@@ -99,7 +99,7 @@ class Entity(object):
             return super(Entity, self).__getattr__(name)
         if not name in self.attributes:
             raise AttributeError(
-                _(u"%(obj)s has no EAV attribute named '%(attr)s'")
+                _(u'%(obj)s has no EAV attribute named "%(attr)s"')
                 % {'obj': self.instance, 'attr': name,})
         return self.storage.get(self.attributes[name].slug, None)
 
@@ -126,13 +126,22 @@ class Entity(object):
         if not hasattr(self, '__storage__'):
             data = getattr(self.instance,
                            self.instance._eav_config.eav_field, None)
-            self.__storage__ = json.loads(data) if data else {}
-
-            for attribute in self.attributes.values():
-                value = self.__storage__.get(attribute.slug, None)
-                self.__storage__[attribute.slug] = attribute.value_decode(
-                    value) if not value is None else None
+            self.__storage__ = self.deserialize(data)
         return self.__storage__
+
+    def serialize(self, data):
+        for attribute in self.attributes.values():
+            value = data.get(attribute.slug, None)
+            data[attribute.slug] = attribute.value_encode(value)
+        return json.dumps(data)
+
+    def deserialize(self, data):
+        data = json.loads(data) if data else {}
+        for attribute in self.attributes.values():
+            value = data.get(attribute.slug, None)
+            data[attribute.slug] = attribute.value_decode(
+                value) if not value is None else None
+        return data
 
     def get_all_attributes(self):
         return self.instance._eav_config.get_attributes(
@@ -144,28 +153,24 @@ class Entity(object):
             if value is None:
                 if attribute.required:
                     raise ValidationError(
-                        _(u"%(attr)s EAV field cannot be blank")
+                        _(u'%(attr)s EAV field cannot be blank')
                         % {'attr': attribute.slug,})
             else:
                 try:
                     map(lambda v: v(value), attribute.get_validators())
                 except ValidationError as e:
                     raise ValidationError(
-                        _(u"%(attr)s EAV field %(err)s")
+                        _(u'%(attr)s EAV field %(err)s')
                         % {'attr': attribute.slug, 'err': e,})
 
     def save(self):
         data = copy.deepcopy(self.storage)
-        for attribute in self.attributes.values():
-            value = self.storage.get(attribute.slug, None)
-            value = attribute.value_encode(value)
-            data[attribute.slug] = value
-        jsondata = json.dumps(data)
+        data = self.serialize(data)
 
         eav_field = self.instance._eav_config.eav_field
-        self.instance.__setattr__(eav_field, jsondata)
+        self.instance.__setattr__(eav_field, data)
         self.instance.__class__.objects.filter(pk=self.instance.pk).update(
-            **{eav_field: jsondata,})
+            **{eav_field: data,})
 
     @staticmethod
     def post_save_handler(sender, *args, **kwargs):

@@ -26,8 +26,10 @@ class BaseMultipleValuesField(forms.CharField):
 
     def to_python(self, value):
         # value convertation from string to python list
-        value = super(BaseMultipleValuesField, self).to_python(value)
-        value = [i.strip() for i in value.split(self.delimiter)]
+        sprtp = super(BaseMultipleValuesField, self).to_python
+        value = ([sprtp(i).strip() for i in value]
+                 if isinstance(value, list) else
+                 [i.strip() for i in sprtp(value).split(self.delimiter)])
         return value
 
     def prepare_value(self, value):
